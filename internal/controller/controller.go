@@ -17,17 +17,17 @@ func New(dbPath string) (*SQLiteController, error) {
         return nil, err
     }
 
-    _, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS responses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            url TEXT,
-            response TEXT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `)
-    if err != nil {
-        return nil, err
-    }
+    // _, err = db.Exec(`
+    //     CREATE TABLE IF NOT EXISTS responses (
+    //         id INTEGER PRIMARY KEY AUTOINCREMENT,
+    //         url TEXT,
+    //         response TEXT,
+    //         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    //     )
+    // `)
+    // if err != nil {
+    //     return nil, err
+    // }
 
     return &SQLiteController{DB: db}, nil
 }
