@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS responses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    url TEXT,
+    response TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
