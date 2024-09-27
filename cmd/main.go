@@ -8,6 +8,8 @@ import (
     "github.com/Bladerunner2014/snap-task/pkg/log"
     "fmt"
     "os"
+    "strconv"
+
 
 )
 
@@ -24,14 +26,21 @@ func loadEnv() {
 
 func main() {
     loadEnv()
-	
-    ctrl, err := controller.New("responses.db")
+    db_name := os.Getenv("SQLITE_DB_NAME")
+
+    ctrl, err := controller.New(db_name)
     if err != nil {
         logger.Fatal().Msg("error creating sqlite controller")
     }
     defer ctrl.Close()
-
-    scheduler := handler.New(10, ctrl)
+    maxGoStr := os.Getenv("MAX_GO")
+    maxGo, err := strconv.Atoi(maxGoStr)
+	if err != nil {
+        logger.Fatal().Msg("error loading .env file")
+	}
+    job_info:=fmt.Sprintf("max job set to :%d", maxGo)
+    logger.Info().Msg(job_info)
+    scheduler := handler.New(maxGo, ctrl)
     port := os.Getenv("PORT")
     logger.Info().Msg("Server starting on 0.0.0.0:8080")
     http.Handle("/job", http.HandlerFunc(scheduler.Handle))
