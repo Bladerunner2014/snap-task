@@ -1,5 +1,5 @@
 ## How does it works?
-
+User send a request to /job endpoint, a gouroutine assigns to user job and will run based on user defined time interval. There is a goroutine limit to prevent app crash. You can edit it on .env 
 ## Run with docker:
 
 ```bash
