@@ -81,14 +81,17 @@ func matchesPattern(data, pattern map[string]interface{}) bool {
 }
 
 func (s *JobScheduler) Handle(w http.ResponseWriter, r *http.Request) {
+    // Set the content type to JSON
+    w.Header().Set("Content-Type", "application/json")
+
     if r.Method != http.MethodPost {
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        jsonResponse(w, map[string]string{"error": "Method not allowed"}, http.StatusMethodNotAllowed)
         return
     }
 
     var jobReq model.JobRequest
     if err := json.NewDecoder(r.Body).Decode(&jobReq); err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
+        jsonResponse(w, map[string]string{"error": "Invalid request body"}, http.StatusBadRequest)
         return
     }
 
@@ -101,10 +104,15 @@ func (s *JobScheduler) Handle(w http.ResponseWriter, r *http.Request) {
     }
 
     if err := s.AddJob(job); err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
+        jsonResponse(w, map[string]string{"error": err.Error()}, http.StatusInternalServerError)
         return
     }
 
-    w.WriteHeader(http.StatusCreated)
-    fmt.Fprintf(w, "Job added successfully")
+    jsonResponse(w, map[string]string{"message": "Job added successfully"}, http.StatusCreated)
+}
+
+// Helper function to send JSON responses
+func jsonResponse(w http.ResponseWriter, data interface{}, statusCode int) {
+    w.WriteHeader(statusCode)
+    json.NewEncoder(w).Encode(data)
 }
